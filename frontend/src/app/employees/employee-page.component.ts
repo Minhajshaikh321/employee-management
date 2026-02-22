@@ -11,15 +11,15 @@ import { EmployeeFormComponent } from './employee-form.component';
   standalone: true,
   imports: [FormsModule, NgFor, NgIf, EmployeeFormComponent],
   template: `
-    <div class="container grid">
-      <div class="card" style="display:flex; justify-content:space-between; align-items:center;">
+    <div class="container grid employee-page">
+      <div class="card page-header">
         <h2>Employee Management</h2>
         <button class="secondary" (click)="logout()">Logout</button>
       </div>
 
       <app-employee-form [selectedEmployee]="selectedEmployee" (save)="saveEmployee($event)" (reset)="selectedEmployee = null" />
 
-      <div class="card grid" style="grid-template-columns:repeat(4,1fr); align-items:end;">
+      <div class="card filter-bar">
         <div>
           <label>Department</label>
           <input [(ngModel)]="department" placeholder="filter by department" />
@@ -34,7 +34,7 @@ import { EmployeeFormComponent } from './employee-form.component';
 
       <div class="card" *ngIf="error"><p class="error">{{ error }}</p></div>
 
-      <div class="card">
+      <div class="card table-card">
         <table class="table">
           <thead>
             <tr>
@@ -50,10 +50,10 @@ import { EmployeeFormComponent } from './employee-form.component';
             <tr *ngFor="let employee of employees">
               <td>{{ employee.name }}</td>
               <td>{{ employee.email }}</td>
-              <td>{{ employee.department }}</td>
-              <td>{{ employee.role }}</td>
+              <td><span class="chip">{{ employee.department || 'N/A' }}</span></td>
+              <td><span class="chip chip-role">{{ employee.role || 'N/A' }}</span></td>
               <td>{{ employee.doj }}</td>
-              <td style="display:flex; gap:0.35rem;">
+              <td class="row-actions">
                 <button class="secondary" (click)="editEmployee(employee)">Edit</button>
                 <button class="danger" (click)="deleteEmployee(employee.id!)">Delete</button>
               </td>
@@ -61,7 +61,7 @@ import { EmployeeFormComponent } from './employee-form.component';
           </tbody>
         </table>
 
-        <div style="display:flex; justify-content:flex-end; gap:0.5rem; margin-top:0.75rem;">
+        <div class="pagination">
           <button class="secondary" [disabled]="currentPage <= 1" (click)="fetchEmployees(currentPage - 1)">Prev</button>
           <span>Page {{ currentPage }} / {{ numPages }}</span>
           <button class="secondary" [disabled]="currentPage >= numPages" (click)="fetchEmployees(currentPage + 1)">Next</button>
