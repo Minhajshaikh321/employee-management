@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Habot Employee Management System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #ec4899;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: var(--dark);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .auth-section {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: var(--gray);
+            color: white;
+        }
+
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 14px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .employee-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            border: 2px solid var(--border);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .employee-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+
+        .employee-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary);
+        }
+
+        .employee-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 12px;
+        }
+
+        .employee-name {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .employee-email {
+            font-size: 13px;
+            color: var(--gray);
+            margin-top: 4px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-department {
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--primary);
+        }
+
+        .badge-role {
+            background: rgba(236, 72, 153, 0.1);
+            color: var(--secondary);
+            margin-left: 6px;
+        }
+
+        .employee-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        .filters {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+            align-items: end;
+        }
+
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--gray);
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover {
+            background: var(--border);
+            color: var(--dark);
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-top: 24px;
+            flex-wrap: wrap;
+        }
+
+        .page-btn {
+            padding: 8px 16px;
+            border: 2px solid var(--border);
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .page-btn:hover:not(:disabled) {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .page-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            padding: 16px 24px;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            box-shadow: var(--shadow-lg);
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast.success {
+            background: var(--success);
+        }
+
+        .toast.error {
+            background: var(--danger);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--gray);
+        }
+
+        .empty-state-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+            opacity: 0.3;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            border-left: 4px solid var(--primary);
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--dark);
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: var(--gray);
+            margin-top: 4px;
+        }
+
+        .login-form {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+            border-radius: 8px;
+            height: 20px;
+            margin-bottom: 12px;
+        }
+
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            
+            header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .filters {
+                flex-direction: column;
+            }
+            
+            .filter-group {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <div class="logo">👥 Habot HRMS</div>
+            <div class="auth-section" id="authSection">
+                <div id="userInfo" class="hidden">
+                    <span id="usernameDisplay"></span>
+                    <button class="btn btn-secondary" onclick="logout()">Logout</button>
+                </div>
+                <div id="loginBtnContainer">
+                    <button class="btn btn-primary" onclick="showLoginModal()">Login</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Login Modal -->
+        <div id="loginModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title">🔐 Authentication</h2>
+                    <button class="modal-close" onclick="closeModal('loginModal')">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <form id="loginForm" class="login-form">
+                        <div class="form-group">
+                            <label>Username</label>
+                            <input type="text" id="loginUsername" required placeholder="Enter username">
+                        </div>
+                        <div class="form-group">
+                            <label>Password</label>
+                            <input type="password" id="loginPassword" required placeholder="Enter password">
+                        </div>
+                        <div class="form-group">
+                            <label>API Base URL</label>
+                            <input type="url" id="apiBaseUrl" value="http://localhost:8000/api" placeholder="http://localhost:8000/api">
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">
+                            <span id="loginSpinner" class="loading hidden" style="width: 16px; height: 16px; border-width: 2px;"></span>
+                            <span id="loginText">Get Token</span>
+                        </button>
+                    </form>
+                    <div style="margin-top: 16px; padding: 12px; background: #f1f5f9; border-radius: 8px; font-size: 13px; color: var(--gray);">
+                        <strong>Note:</strong> For JWT, use <code>/token/</code> endpoint. For simple token, use <code>/api-token-auth/</code>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content (Hidden until logged in) -->
+        <div id="mainContent" class="hidden">
+            <!-- Stats -->
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-value" id="totalEmployees">0</div>
+                    <div class="stat-label">Total Employees</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="totalPages">0</div>
+                    <div class="stat-label">Total Pages</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="currentPageDisplay">1</div>
+                    <div class="stat-label">Current Page</div>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 16px;">
+                    <h2 style="font-size: 20px;">Employee Management</h2>
+                    <button class="btn btn-success" onclick="showAddModal()">+ Add Employee</button>
+                </div>
+
+                <!-- Filters -->
+                <div class="filters">
+                    <div class="filter-group">
+                        <label>Department</label>
+                        <select id="filterDepartment" onchange="applyFilters()">
+                            <option value="">All Departments</option>
+                            <option value="HR">HR</option>
+                            <option value="Engineering">Engineering</option>
+                            <option value="Sales">Sales</option>
+                            <option value="Marketing">Marketing</option>
+                            <option value="Finance">Finance</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Role</label>
+                        <select id="filterRole" onchange="applyFilters()">
+                            <option value="">All Roles</option>
+                            <option value="Manager">Manager</option>
+                            <option value="Developer">Developer</option>
+                            <option value="Analyst">Analyst</option>
+                            <option value="Designer">Designer</option>
+                            <option value="Director">Director</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Search</label>
+                        <input type="text" id="searchInput" placeholder="Search by name..." oninput="debounceSearch()">
+                    </div>
+                    <button class="btn btn-secondary" onclick="resetFilters()" style="margin-bottom: 16px;">Reset</button>
+                </div>
+            </div>
+
+            <!-- Employee Grid -->
+            <div id="employeeGrid" class="grid">
+                <!-- Employees will be loaded here -->
+            </div>
+
+            <!-- Empty State -->
+            <div id="emptyState" class="empty-state hidden">
+                <div class="empty-state-icon">📭</div>
+                <h3>No employees found</h3>
+                <p>Try adjusting your filters or add a new employee</p>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination" id="pagination">
+                <!-- Pagination buttons will be generated here -->
+            </div>
+        </div>
+
+        <!-- Add/Edit Employee Modal -->
+        <div id="employeeModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title" id="modalTitle">Add Employee</h2>
+                    <button class="modal-close" onclick="closeModal('employeeModal')">&times;</button>
+                </div>
+                <form id="employeeForm" onsubmit="saveEmployee(event)">
+                    <div class="modal-body">
+                        <input type="hidden" id="employeeId">
+                        <div class="form-group">
+                            <label>Full Name *</label>
+                            <input type="text" id="empName" required placeholder="John Doe">
+                        </div>
+                        <div class="form-group">
+                            <label>Email *</label>
+                            <input type="email" id="empEmail" required placeholder="john@example.com">
+                        </div>
+                        <div class="form-group">
+                            <label>Department</label>
+                            <select id="empDepartment">
+                                <option value="">Select Department</option>
+                                <option value="HR">HR</option>
+                                <option value="Engineering">Engineering</option>
+                                <option value="Sales">Sales</option>
+                                <option value="Marketing">Marketing</option>
+                                <option value="Finance">Finance</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Role</label>
+                            <select id="empRole">
+                                <option value="">Select Role</option>
+                                <option value="Manager">Manager</option>
+                                <option value="Developer">Developer</option>
+                                <option value="Analyst">Analyst</option>
+                                <option value="Designer">Designer</option>
+                                <option value="Director">Director</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" onclick="closeModal('employeeModal')">Cancel</button>
+                        <button type="submit" class="btn btn-primary">
+                            <span id="saveSpinner" class="loading hidden" style="width: 16px; height: 16px; border-width: 2px;"></span>
+                            <span id="saveText">Save Employee</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- View Employee Modal -->
+        <div id="viewModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title">Employee Details</h2>
+                    <button class="modal-close" onclick="closeModal('viewModal')">&times;</button>
+                </div>
+                <div class="modal-body" id="viewModalContent">
+                    <!-- Content loaded dynamically -->
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" onclick="closeModal('viewModal')">Close</button>
+                    <button class="btn btn-primary" id="viewEditBtn">Edit</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Delete Confirmation Modal -->
+        <div id="deleteModal" class="modal">
+            <div class="modal-content" style="max-width: 400px;">
+                <div class="modal-header">
+                    <h2 class="modal-title">⚠️ Confirm Delete</h2>
+                    <button class="modal-close" onclick="closeModal('deleteModal')">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to delete <strong id="deleteEmployeeName"></strong>? This action cannot be undone.</p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" onclick="closeModal('deleteModal')">Cancel</button>
+                    <button class="btn btn-danger" onclick="confirmDelete()">
+                        <span id="deleteSpinner" class="loading hidden" style="width: 16px; height: 16px; border-width: 2px;"></span>
+                        <span id="deleteText">Delete</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast" class="toast">
+        <span id="toastIcon">✓</span>
+        <span id="toastMessage">Operation successful</span>
+    </div>
+
+    <script>
+        // Global State
+        let authToken = localStorage.getItem('authToken');
+        let apiBaseUrl = localStorage.getItem('apiBaseUrl') || 'http://localhost:8000/api';
+        let currentPage = 1;
+        let totalPages = 1;
+        let employees = [];
+        let deleteId = null;
+        let searchTimeout = null;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            if (authToken) {
+                showMainContent();
+                loadEmployees();
+            }
+        });
+
+        // API Helper Functions
+        async function apiRequest(endpoint, options = {}) {
+            const url = `${apiBaseUrl}${endpoint}`;
+            const config = {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${authToken}`,
+                    ...options.headers
+                },
+                ...options
+            };
+
+            if (config.body && typeof config.body === 'object') {
+                config.body = JSON.stringify(config.body);
+            }
+
+            try {
+                const response = await fetch(url, config);
+                
+                if (response.status === 401) {
+                    logout();
+                    showToast('Session expired. Please login again.', 'error');
+                    return null;
+                }
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(JSON.stringify(error));
+                }
+
+                if (response.status === 204) {
+                    return null;
+                }
+
+                return await response.json();
+            } catch (error) {
+                console.error('API Error:', error);
+                throw error;
+            }
+        }
+
+        // Authentication
+        function showLoginModal() {
+            document.getElementById('loginModal').classList.add('active');
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            const spinner = document.getElementById('loginSpinner');
+            const text = document.getElementById('loginText');
+            
+            btn.disabled = true;
+            spinner.classList.remove('hidden');
+            text.textContent = 'Authenticating...';
+
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+            apiBaseUrl = document.getElementById('apiBaseUrl').value;
+
+            try {
+                // Try JWT first, then fall back to simple token
+                let response = await fetch(`${apiBaseUrl}/token/`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                if (!response.ok) {
+                    // Try simple token auth
+                    response = await fetch(`${apiBaseUrl}/api-token-auth/`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ username, password })
+                    });
+                }
+
+                if (!response.ok) throw new Error('Invalid credentials');
+
+                const data = await response.json();
+                authToken = data.token || data.access;
+                localStorage.setItem('authToken', authToken);
+                localStorage.setItem('apiBaseUrl', apiBaseUrl);
+                localStorage.setItem('username', username);
+
+                closeModal('loginModal');
+                showMainContent();
+                loadEmployees();
+                showToast('Login successful!', 'success');
+            } catch (error) {
+                showToast('Login failed: ' + error.message, 'error');
+            } finally {
+                btn.disabled = false;
+                spinner.classList.add('hidden');
+                text.textContent = 'Get Token';
+            }
+        });
+
+        function logout() {
+            authToken = null;
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('username');
+            document.getElementById('mainContent').classList.add('hidden');
+            document.getElementById('userInfo').classList.add('hidden');
+            document.getElementById('loginBtnContainer').classList.remove('hidden');
+            document.getElementById('usernameDisplay').textContent = '';
+        }
+
+        function showMainContent() {
+            document.getElementById('mainContent').classList.remove('hidden');
+            document.getElementById('userInfo').classList.remove('hidden');
+            document.getElementById('loginBtnContainer').classList.add('hidden');
+            document.getElementById('usernameDisplay').textContent = `👤 ${localStorage.getItem('username') || 'User'}`;
+        }
+
+        // Employee CRUD Operations
+        async function loadEmployees() {
+            const grid = document.getElementById('employeeGrid');
+            grid.innerHTML = '<div class="skeleton" style="height: 200px;"></div>'.repeat(3);
+
+            const department = document.getElementById('filterDepartment').value;
+            const role = document.getElementById('filterRole').value;
+            const search = document.getElementById('searchInput').value;
+
+            let endpoint = `/employees/?page=${currentPage}`;
+            if (department) endpoint += `&department=${department}`;
+            if (role) endpoint += `&role=${role}`;
+
+            try {
+                const data = await apiRequest(endpoint);
+                
+                if (data) {
+                    employees = data.results || data; // Handle both paginated and non-paginated
+                    totalPages = data.num_pages || 1;
+                    
+                    document.getElementById('totalEmployees').textContent = data.count || employees.length;
+                    document.getElementById('totalPages').textContent = totalPages;
+                    document.getElementById('currentPageDisplay').textContent = currentPage;
+
+                    renderEmployees(employees);
+                    renderPagination();
+                }
+            } catch (error) {
+                showToast('Failed to load employees', 'error');
+            }
+        }
+
+        function renderEmployees(data) {
+            const grid = document.getElementById('employeeGrid');
+            const emptyState = document.getElementById('emptyState');
+
+            if (data.length === 0) {
+                grid.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+            grid.innerHTML = data.map(emp => `
+                <div class="employee-card">
+                    <div class="employee-header">
+                        <div>
+                            <div class="employee-name">${escapeHtml(emp.name)}</div>
+                            <div class="employee-email">${escapeHtml(emp.email)}</div>
+                        </div>
+                    </div>
+                    <div style="margin: 12px 0;">
+                        ${emp.department ? `<span class="badge badge-department">${escapeHtml(emp.department)}</span>` : ''}
+                        ${emp.role ? `<span class="badge badge-role">${escapeHtml(emp.role)}</span>` : ''}
+                    </div>
+                    <div style="font-size: 12px; color: var(--gray); margin-bottom: 8px;">
+                        📅 Joined: ${formatDate(emp.date_joined)}
+                    </div>
+                    <div class="employee-actions">
+                        <button class="btn btn-primary btn-small" onclick="viewEmployee(${emp.id})">View</button>
+                        <button class="btn btn-warning btn-small" onclick="editEmployee(${emp.id})">Edit</button>
+                        <button class="btn btn-danger btn-small" onclick="deleteEmployee(${emp.id}, '${escapeHtml(emp.name)}')">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function showAddModal() {
+            document.getElementById('employeeForm').reset();
+            document.getElementById('employeeId').value = '';
+            document.getElementById('modalTitle').textContent = 'Add Employee';
+            document.getElementById('employeeModal').classList.add('active');
+        }
+
+        async function viewEmployee(id) {
+            try {
+                const emp = await apiRequest(`/employees/${id}/`);
+                if (emp) {
+                    document.getElementById('viewModalContent').innerHTML = `
+                        <div style="text-align: center; margin-bottom: 24px;">
+                            <div style="width: 80px; height: 80px; background: linear-gradient(135deg, var(--primary), var(--secondary)); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; color: white; font-size: 32px; font-weight: bold;">
+                                ${emp.name.charAt(0).toUpperCase()}
+                            </div>
+                            <h3 style="font-size: 24px; margin-bottom: 4px;">${escapeHtml(emp.name)}</h3>
+                            <p style="color: var(--gray);">${escapeHtml(emp.email)}</p>
+                        </div>
+                        <div style="display: grid; gap: 16px;">
+                            <div style="display: flex; justify-content: space-between; padding: 12px; background: #f8fafc; border-radius: 8px;">
+                                <span style="color: var(--gray);">Department</span>
+                                <strong>${emp.department || 'N/A'}</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding: 12px; background: #f8fafc; border-radius: 8px;">
+                                <span style="color: var(--gray);">Role</span>
+                                <strong>${emp.role || 'N/A'}</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding: 12px; background: #f8fafc; border-radius: 8px;">
+                                <span style="color: var(--gray);">Date Joined</span>
+                                <strong>${formatDate(emp.date_joined)}</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding: 12px; background: #f8fafc; border-radius: 8px;">
+                                <span style="color: var(--gray);">Employee ID</span>
+                                <strong>#${emp.id}</strong>
+                            </div>
+                        </div>
+                    `;
+                    document.getElementById('viewEditBtn').onclick = () => {
+                        closeModal('viewModal');
+                        editEmployee(id);
+                    };
+                    document.getElementById('viewModal').classList.add('active');
+                }
+            } catch (error) {
+                showToast('Failed to load employee details', 'error');
+            }
+        }
+
+        async function editEmployee(id) {
+            try {
+                const emp = await apiRequest(`/employees/${id}/`);
+                if (emp) {
+                    document.getElementById('employeeId').value = emp.id;
+                    document.getElementById('empName').value = emp.name;
+                    document.getElementById('empEmail').value = emp.email;
+                    document.getElementById('empDepartment').value = emp.department || '';
+                    document.getElementById('empRole').value = emp.role || '';
+                    document.getElementById('modalTitle').textContent = 'Edit Employee';
+                    document.getElementById('employeeModal').classList.add('active');
+                }
+            } catch (error) {
+                showToast('Failed to load employee', 'error');
+            }
+        }
+
+        async function saveEmployee(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            const spinner = document.getElementById('saveSpinner');
+            const text = document.getElementById('saveText');
+            
+            btn.disabled = true;
+            spinner.classList.remove('hidden');
+            text.textContent = 'Saving...';
+
+            const id = document.getElementById('employeeId').value;
+            const data = {
+                name: document.getElementById('empName').value,
+                email: document.getElementById('empEmail').value,
+                department: document.getElementById('empDepartment').value,
+                role: document.getElementById('empRole').value
+            };
+
+            try {
+                if (id) {
+                    await apiRequest(`/employees/${id}/`, {
+                        method: 'PUT',
+                        body: data
+                    });
+                    showToast('Employee updated successfully!', 'success');
+                } else {
+                    await apiRequest('/employees/', {
+                        method: 'POST',
+                        body: data
+                    });
+                    showToast('Employee created successfully!', 'success');
+                }
+                closeModal('employeeModal');
+                loadEmployees();
+            } catch (error) {
+                const errorMsg = JSON.parse(error.message);
+                const message = Object.values(errorMsg).flat().join(', ');
+                showToast(message || 'Operation failed', 'error');
+            } finally {
+                btn.disabled = false;
+                spinner.classList.add('hidden');
+                text.textContent = id ? 'Update Employee' : 'Save Employee';
+            }
+        }
+
+        function deleteEmployee(id, name) {
+            deleteId = id;
+            document.getElementById('deleteEmployeeName').textContent = name;
+            document.getElementById('deleteModal').classList.add('active');
+        }
+
+        async function confirmDelete() {
+            const btn = document.querySelector('#deleteModal .btn-danger');
+            const spinner = document.getElementById('deleteSpinner');
+            const text = document.getElementById('deleteText');
+            
+            btn.disabled = true;
+            spinner.classList.remove('hidden');
+            text.textContent = 'Deleting...';
+
+            try {
+                await apiRequest(`/employees/${deleteId}/`, {
+                    method: 'DELETE'
+                });
+                showToast('Employee deleted successfully!', 'success');
+                closeModal('deleteModal');
+                loadEmployees();
+            } catch (error) {
+                showToast('Failed to delete employee', 'error');
+            } finally {
+                btn.disabled = false;
+                spinner.classList.add('hidden');
+                text.textContent = 'Delete';
+                deleteId = null;
+            }
+        }
+
+        // Pagination
+        function renderPagination() {
+            const container = document.getElementById('pagination');
+            let html = `
+                <button class="page-btn" onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>
+                    ← Previous
+                </button>
+            `;
+
+            for (let i = 1; i <= totalPages; i++) {
+                if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
+                    html += `
+                        <button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="changePage(${i})">
+                            ${i}
+                        </button>
+                    `;
+                } else if (i === currentPage - 2 || i === currentPage + 2) {
+                    html += `<span style="color: var(--gray);">...</span>`;
+                }
+            }
+
+            html += `
+                <button class="page-btn" onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>
+                    Next →
+                </button>
+            `;
+
+            container.innerHTML = html;
+        }
+
+        function changePage(page) {
+            if (page < 1 || page > totalPages) return;
+            currentPage = page;
+            loadEmployees();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Filters
+        function applyFilters() {
+            currentPage = 1;
+            loadEmployees();
+        }
+
+        function resetFilters() {
+            document.getElementById('filterDepartment').value = '';
+            document.getElementById('filterRole').value = '';
+            document.getElementById('searchInput').value = '';
+            currentPage = 1;
+            loadEmployees();
+        }
+
+        function debounceSearch() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+                if (searchTerm) {
+                    const filtered = employees.filter(emp => 
+                        emp.name.toLowerCase().includes(searchTerm) ||
+                        emp.email.toLowerCase().includes(searchTerm)
+                    );
+                    renderEmployees(filtered);
+                } else {
+                    loadEmployees();
+                }
+            }, 300);
+        }
+
+        // Utilities
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const icon = document.getElementById('toastIcon');
+            const msg = document.getElementById('toastMessage');
+            
+            toast.className = `toast ${type}`;
+            icon.textContent = type === 'success' ? '✓' : '✕';
+            msg.textContent = message;
+            
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return 'N/A';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'short', 
+                day: 'numeric' 
+            });
+        }
+
+        // Close modals on outside click
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.classList.remove('active');
+            }
+        }
+    </script>
+</body>
+</html>
