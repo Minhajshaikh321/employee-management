@@ -9,13 +9,13 @@ import { Employee } from '../core/models';
   template: `
     <div class="card">
       <h3>{{ selectedEmployee ? 'Update Employee' : 'Create Employee' }}</h3>
-      <form [formGroup]="form" (ngSubmit)="submit()" class="grid" style="grid-template-columns:repeat(2,1fr)">
+      <form [formGroup]="form" (ngSubmit)="submit()" class="grid employee-form-grid">
         <input formControlName="name" placeholder="Name" />
         <input formControlName="email" placeholder="Email" />
         <input formControlName="department" placeholder="Department" />
         <input formControlName="role" placeholder="Role" />
         <input formControlName="doj" type="date" placeholder="Date of joining" />
-        <div style="grid-column:1/-1; display:flex; gap:0.5rem;">
+        <div class="form-actions">
           <button type="submit">{{ selectedEmployee ? 'Update' : 'Create' }}</button>
           <button class="secondary" type="button" (click)="clear()">Clear</button>
         </div>
